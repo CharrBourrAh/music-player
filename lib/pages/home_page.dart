@@ -66,6 +66,17 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   children: [
                     SlidableAction(
                       onPressed: (context) {
+                        // Handle edit action
+                        // You can implement your own edit functionality here
+                      },
+                      backgroundColor: Colors.grey,
+                      foregroundColor:
+                      Theme.of(context).colorScheme.inversePrimary,
+                      icon: Icons.edit,
+                      label: 'Edit',
+                    ),
+                    SlidableAction(
+                      onPressed: (context) {
                         // Handle delete action
                         playlistProvider.removeSong(index);
                       },
@@ -74,17 +85,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           Theme.of(context).colorScheme.inversePrimary,
                       icon: Icons.delete,
                       label: 'Delete',
-                    ),
-                    SlidableAction(
-                      onPressed: (context) {
-                        // Handle edit action
-                        // You can implement your own edit functionality here
-                      },
-                      backgroundColor: Colors.grey,
-                      foregroundColor:
-                          Theme.of(context).colorScheme.inversePrimary,
-                      icon: Icons.edit,
-                      label: 'Edit',
                     ),
                   ],
                 ),
@@ -95,7 +95,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       subtitle: Text(song.artistName),
                       leading: Image.asset(song.albumArtImagePath),
                       trailing: IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          final controller = Slidable.of(ctx);
+                          if (controller != null) {
+                            controller.openEndActionPane();
+                          }
+                        },
                         icon: Icon(Icons.more_vert),
                       ),
                       onTap: () => goToSong(index),
