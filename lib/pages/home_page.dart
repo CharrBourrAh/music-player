@@ -14,8 +14,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late final dynamic playlistProvider;
 
   @override
@@ -26,11 +25,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void goToSong(int songIndex) {
-// update the current song index in the provider
+    // update the current song index in the provider
     playlistProvider.currentSongIndex = songIndex;
 
     // Navigate to the song page
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SongPage()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SongPage()),
+    );
   }
 
   @override
@@ -58,8 +60,9 @@ class _HomePageState extends State<HomePage> {
               // return List tile ui
               return Slidable(
                 key: Key(song.songName),
+                groupTag: 'songList',
                 endActionPane: ActionPane(
-                  motion: const ScrollMotion(),
+                  motion: const DrawerMotion(),
                   children: [
                     SlidableAction(
                       onPressed: (context) {
@@ -67,7 +70,8 @@ class _HomePageState extends State<HomePage> {
                         playlistProvider.removeSong(index);
                       },
                       backgroundColor: Colors.red,
-                      foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+                      foregroundColor:
+                          Theme.of(context).colorScheme.inversePrimary,
                       icon: Icons.delete,
                       label: 'Delete',
                     ),
@@ -77,20 +81,34 @@ class _HomePageState extends State<HomePage> {
                         // You can implement your own edit functionality here
                       },
                       backgroundColor: Colors.grey,
-                      foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+                      foregroundColor:
+                          Theme.of(context).colorScheme.inversePrimary,
                       icon: Icons.edit,
                       label: 'Edit',
                     ),
                   ],
                 ),
-                child: ListTile(
-                title: Text(song.songName),
-                subtitle: Text(song.artistName),
-                leading: Image.asset(song.albumArtImagePath),
-                trailing: IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
-                onTap: () => goToSong(index),
-                onLongPress: () {},
-              ));
+                child: Builder(
+                  builder: (BuildContext ctx) {
+                    return ListTile(
+                      title: Text(song.songName),
+                      subtitle: Text(song.artistName),
+                      leading: Image.asset(song.albumArtImagePath),
+                      trailing: IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.more_vert),
+                      ),
+                      onTap: () => goToSong(index),
+                      onLongPress: () {
+                        final controller = Slidable.of(ctx);
+                        if (controller != null) {
+                          controller.openEndActionPane();
+                        }
+                      },
+                    );
+                  }
+                ),
+              );
             },
           );
         },
