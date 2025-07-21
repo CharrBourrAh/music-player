@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:music/components/menu_drawer.dart';
 import 'package:music/models/playlist_provider.dart';
+import 'package:music/pages/song_modification.dart';
 import 'package:music/pages/song_page.dart';
 import 'package:provider/provider.dart';
 
@@ -32,6 +33,16 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => SongPage()),
+    );
+  }
+  
+  void goToSongModification(int songIndex) {
+    // Navigate to the song modification page
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SongModification(songIndex: songIndex),
+      ),
     );
   }
 
@@ -67,7 +78,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     SlidableAction(
                       onPressed: (context) {
                         // Handle edit action
-                        // You can implement your own edit functionality here
+                        goToSongModification(index);
                       },
                       backgroundColor: Colors.grey,
                       foregroundColor:
