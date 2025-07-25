@@ -36,6 +36,19 @@ class _SongModificationState extends State<SongModification> {
     songInfo = playlistProvider.playlist[playlistProvider.currentSongIndex];
   }
 
+  final _titleControler = TextEditingController();
+  final _artistControler = TextEditingController();
+  final _albumArtPathControler = TextEditingController();
+
+  @override
+  void dispose() {
+    // Dispose of the controllers to free up resources
+    _titleControler.dispose();
+    _artistControler.dispose();
+    _albumArtPathControler.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,6 +124,7 @@ class _SongModificationState extends State<SongModification> {
                               CupertinoTextField(
                                 placeholder: songInfo.songName,
                                 decoration: BoxDecoration(),
+                                controller: _titleControler,
                               ),
                             ],
                           ),
@@ -134,6 +148,7 @@ class _SongModificationState extends State<SongModification> {
                               CupertinoTextField(
                                 placeholder: songInfo.artistName,
                                 decoration: BoxDecoration(),
+                                controller: _artistControler,
                               ),
                             ],
                           ),
@@ -147,7 +162,14 @@ class _SongModificationState extends State<SongModification> {
                           horizontal: 110,
                           vertical: 15,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          saveChanges(
+                            _titleControler.text.isEmpty ? songInfo.songName : _titleControler.text,
+                            _artistControler.text.isEmpty ? songInfo.artistName : _artistControler.text,
+                            _albumArtPathControler.text.isEmpty ? songInfo.albumArtImagePath : _albumArtPathControler.text,
+                            playlistProvider.currentSongIndex,
+                          );
+                        },
                         color: Colors.blue,
                         child: Text(
                           "Save",
