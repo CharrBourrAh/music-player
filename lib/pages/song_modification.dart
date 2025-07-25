@@ -16,6 +16,18 @@ class _SongModificationState extends State<SongModification> {
   late final dynamic playlistProvider;
   late final Song songInfo;
 
+  void saveChanges(String? title, String? artist, String? albumArtPath, int songIndex) {
+    // Logic to save changes to the song
+    // This could involve updating the song in the playlistProvider
+    // and notifying listeners if necessary.
+    playlistProvider.playlist[songIndex].songName = title;
+    playlistProvider.playlist[songIndex].artistName = artist;
+    playlistProvider.playlist[songIndex].albumArtImagePath = albumArtPath;
+    playlistProvider.notifyListeners();
+    dispose();
+    Navigator.pop(context); // Close the modification screen after saving
+  }
+
   @override
   void initState() {
     super.initState();
