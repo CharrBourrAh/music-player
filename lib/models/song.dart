@@ -1,8 +1,8 @@
 class Song{
-  final String songName;
-  final String artistName;
-  final String albumArtImagePath;
-  final String audioFilePath;
+  String songName;
+  String artistName;
+  String albumArtImagePath;
+  String audioFilePath;
 
   Song({
     required this.songName,
