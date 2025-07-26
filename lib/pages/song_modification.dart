@@ -217,9 +217,30 @@ class _SongModificationState extends State<SongModification> {
                                   height: 250,
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
-                                    child: Image.asset(
-                                      songInfo.albumArtImagePath,
-                                    ),
+                                    child:
+                                        _albumArtPath.isNotEmpty &&
+                                                File(_albumArtPath).existsSync()
+                                            ? Image.file(
+                                              File(_albumArtPath),
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (
+                                                context,
+                                                error,
+                                                stackTrace,
+                                              ) {
+                                                print(
+                                                  'Erreur lors du chargement de l\'image: $error',
+                                                );
+                                                return Image.asset(
+                                                  songInfo.albumArtImagePath,
+                                                  fit: BoxFit.cover,
+                                                );
+                                              },
+                                            )
+                                            : Image.asset(
+                                              songInfo.albumArtImagePath,
+                                              fit: BoxFit.cover,
+                                            ),
                                   ),
                                 ),
                               ],
@@ -232,7 +253,7 @@ class _SongModificationState extends State<SongModification> {
                                 horizontal: 50,
                                 vertical: 10,
                               ),
-                              onPressed: () {},
+                              onPressed: _pickFile,
                               color: Theme.of(context).colorScheme.primary,
                               child: Text(
                                 "Change Cover",
