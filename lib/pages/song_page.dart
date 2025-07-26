@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:music/components/neumorphism_box.dart';
@@ -61,9 +63,28 @@ class SongPage extends StatelessWidget {
                   NeumorphismBox(
                     child: Column(
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.asset(currentSong.albumArtImagePath),
+                        SizedBox(
+                          width: 286,
+                          height: 286,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: currentSong.albumArtImagePath.isNotEmpty && File(currentSong.albumArtImagePath).existsSync()
+                                ? Image.file(
+                              File(currentSong.albumArtImagePath),
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                print('Error while loading the image: $error');
+                                return Image.asset(
+                                  currentSong.albumArtImagePath,
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            )
+                                : Image.asset(
+                              currentSong.albumArtImagePath,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                         // song title
                         Row(
