@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:music/models/song.dart';
@@ -16,26 +21,52 @@ class _SongModificationState extends State<SongModification> {
   late final dynamic playlistProvider;
   late final Song songInfo;
 
+  Future<String?> _copyImageToAppDirectory(String sourcePath) async {
+    try {
+      final Directory appDir = await getApplicationDocumentsDirectory();
+      final String fileName = path.basename(sourcePath);
+      final String newPath = path.join(appDir.path, 'images', fileName);
+
+      // Create the directory if it doesn't exist
+      final Directory albumArtsDir = Directory(path.dirname(newPath));
+      if (!await albumArtsDir.exists()) {
+        await albumArtsDir.create(recursive: true);
+      }
+
+      // Copy the file to the new path
+      final File sourceFile = File(sourcePath);
+      final File newFile = await sourceFile.copy(newPath);
+
+      return newFile.path;
+    } catch (e) {
+      print('Error while copying the image: $e');
+      return null;
+    }
+  }
+
   void saveChanges(
-    String? title,
-    String? artist,
-    String? albumArtPath,
-    int songIndex,
-  ) {
-    // Logic to save changes to the song
-    // This could involve updating the song in the playlistProvider
-    // and notifying listeners if necessary.
+      String? title,
+      String? artist,
+      String? albumArtPath,
+      int songIndex,
+      ) {
     playlistProvider.playlist[songIndex].songName = title;
     playlistProvider.playlist[songIndex].artistName = artist;
-    playlistProvider.playlist[songIndex].albumArtImagePath = albumArtPath;
+
+    // Use the provided album art path or the existing one if empty
+    if (_albumArtPath.isNotEmpty) {
+      playlistProvider.playlist[songIndex].albumArtImagePath = _albumArtPath;
+    }
+
     playlistProvider.notifyListeners();
-    Navigator.pop(context); // Close the modification screen after saving
+    Navigator.pop(context);
   }
 
   final _titleController = TextEditingController();
   final _artistController = TextEditingController();
   final _albumArtPathController = TextEditingController();
   bool _hasChanges = false;
+  late String _albumArtPath;
 
   @override
   void initState() {
@@ -47,6 +78,9 @@ class _SongModificationState extends State<SongModification> {
     _titleController.addListener(_checkForChanges);
     _artistController.addListener(_checkForChanges);
     _albumArtPathController.addListener(_checkForChanges);
+
+    // Initialize the controllers with the current song information
+    _albumArtPath = songInfo.albumArtImagePath ?? '';
   }
 
   void _checkForChanges() {
@@ -59,6 +93,34 @@ class _SongModificationState extends State<SongModification> {
       setState(() {
         _hasChanges = hasChanges;
       });
+    }
+  }
+
+  void _pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: false,
+    );
+
+    if (result != null && result.files.single.path != null) {
+      String sourcePath = result.files.single.path!;
+      print('Path source: $sourcePath');
+
+      // Copy the image to the app directory
+      String? newPath = await _copyImageToAppDirectory(sourcePath);
+
+      if (newPath != null) {
+        print('New image have been copied to: $newPath');
+        setState(() {
+          _albumArtPath = newPath;
+          _albumArtPathController.text = newPath;
+        });
+      } else {
+        print('Error while copying the image');
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error while saving the image')));
+      }
     }
   }
 
