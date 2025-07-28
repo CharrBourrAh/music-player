@@ -11,7 +11,8 @@ import '../components/neumorphism_box.dart';
 import '../models/playlist_provider.dart';
 
 class SongModification extends StatefulWidget {
-  const SongModification({super.key, required int songIndex});
+  final int songIndex;
+  const SongModification({super.key, required this.songIndex});
 
   @override
   State<SongModification> createState() => _SongModificationState();
@@ -73,7 +74,7 @@ class _SongModificationState extends State<SongModification> {
     super.initState();
     // Initialize the playlist provider
     playlistProvider = Provider.of<PlaylistProvider>(context, listen: false);
-    songInfo = playlistProvider.playlist[playlistProvider.currentSongIndex];
+    songInfo = playlistProvider.playlist[widget.songIndex];
 
     _titleController.addListener(_checkForChanges);
     _artistController.addListener(_checkForChanges);

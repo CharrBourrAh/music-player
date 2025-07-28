@@ -168,6 +168,7 @@ class _HomePageState extends State<HomePage>
                       SlidableAction(
                         onPressed: (context) {
                           // Handle edit action
+                          print('Edit song at index: $index');
                           goToSongModification(index);
                         },
                         backgroundColor: Colors.grey,
