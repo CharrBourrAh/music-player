@@ -335,7 +335,7 @@ class _SongModificationState extends State<SongModification> {
                                       _albumArtPathController.text.isEmpty
                                           ? songInfo.albumArtImagePath
                                           : _albumArtPathController.text,
-                                      playlistProvider.currentSongIndex,
+                                      widget.songIndex,
                                     );
                                   }
                                   : null,
