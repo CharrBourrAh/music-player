@@ -249,7 +249,7 @@ class _SongModificationState extends State<SongModification> {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 15.0),
-                            child: CupertinoButton.filled(
+                            child: CupertinoButton(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 50,
                                 vertical: 10,
@@ -317,7 +317,7 @@ class _SongModificationState extends State<SongModification> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 15.0),
-                        child: CupertinoButton.filled(
+                        child: CupertinoButton(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 110,
                             vertical: 15,
