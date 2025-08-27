@@ -123,7 +123,7 @@ class _HomePageState extends State<HomePage>
             ),
             Padding(
               padding: const EdgeInsets.only(top: 15.0),
-              child: CupertinoButton.filled(
+              child: CupertinoButton(
                 onPressed: () async {
                   // Open app settings to allow user to authorize storage access
                   await AppSettings.openAppSettings(type: AppSettingsType.settings);
